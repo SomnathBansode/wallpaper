@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scroll Image with Changing Background</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body,
+      html {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        background-size: cover; /* Ensures full-screen coverage */
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: blur(8px);
+        transition: background-image 0.5s ease-in-out;
+        z-index: -1;
+      }
+      .content {
+        display: flex;
+        overflow-y: auto;
+        flex-direction: column;
+        align-items: center;
+        height: 80vh;
+        width: 100%;
+        scroll-snap-type: y mandatory;
+        gap: 20px;
+        padding: 10px;
+      }
+      .image-container {
+        scroll-snap-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        width: 100%;
+      }
+      img {
+        max-width: 90%;
+        max-height: 70vh;
+        object-fit: cover;
+        border-radius: 9px;
+        box-shadow: 0 0 1em 0.5em rgba(0, 0, 0, 1); /* Use `em` instead of `px` */
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      }
+
+      img:hover {
+        transform: scale(1.05);
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 768px) {
+        img {
+          max-height: 60vh;
+          width: 90%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        img {
+          max-height: 50vh;
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg"></div>
+    <div class="content"></div>
+    <script>
+      const content = document.querySelector(".content");
+      const bg = document.querySelector(".bg");
+
+      const images = [
+        {
+          url: "https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/shree-mahalasa-narayani-ranjitsingh-patil.jpg",
+        },
+        {
+          url: "https://i.pinimg.com/1200x/01/04/a8/0104a820c832256dab6263f38efb44bb.jpg",
+        },
+        {
+          url: "https://i.pinimg.com/1200x/c4/5f/74/c45f7491522b0639d01644c790cd17b9.jpg",
+        },
+        {
+          url: "https://i.pinimg.com/736x/2e/e9/ab/2ee9ab70a2b71a4861192b15a9dc73df.jpg",
+        },
+        {
+          url: "https://i.pinimg.com/474x/85/51/7a/85517a86bb2b3ed2c8913441994c1299.jpg",
+        },
+        {
+          url: "https://i.pinimg.com/1200x/b7/c8/04/b7c804443ca45b040d5bac3fa179d3f0.jpg",
+        },
+      ];
+
+      images.forEach((item, index) => {
+        let div = document.createElement("div");
+        div.classList.add("image-container");
+
+        let imgElement = document.createElement("img");
+        imgElement.src = item.url;
+        imgElement.alt = "Foreground Image";
+
+        div.appendChild(imgElement);
+        content.appendChild(div);
+      });
+
+      // Change background when scrolling
+      content.addEventListener("scroll", () => {
+        const containers = document.querySelectorAll(".image-container");
+        containers.forEach((container, index) => {
+          const rect = container.getBoundingClientRect();
+          if (rect.top >= 0 && rect.top < window.innerHeight / 2) {
+            bg.style.backgroundImage = `url(${images[index].url})`;
+          }
+        });
+      });
+
+      // Set initial background image
+      bg.style.backgroundImage = `url(${images[0].url})`;
+    </script>
+  </body>
+</html>
